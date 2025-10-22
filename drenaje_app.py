@@ -65,12 +65,12 @@ try:
 	L_ernstpos = (-B + math.sqrt(B**2 - 4*A*C)) / (2 * A)
     L_ernstneg = (-B - math.sqrt(B**2 - 4*A*C)) / (2 * A)
 
-if L_ernstpos > 0:
-	L_ernst = L_ernstpos
-elif L_ernstneg > 0:
-L_ernst = L_ernstneg
-else:
-L_ernst = None
+		if L_ernstpos > 0:
+			L_ernst = L_ernstpos
+		elif L_ernstneg > 0:
+			L_ernst = L_ernstneg
+		else:
+			L_ernst = None
     st.success(f"✅ Espaciamiento Ernst: {L_ernst:.2f} m")
 except:
     st.error("❌ Error en el cálculo de Ernst. Verifica los parámetros.")
@@ -96,6 +96,7 @@ except:
 
    
    
+
 
 
 
