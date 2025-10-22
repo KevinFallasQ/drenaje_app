@@ -55,12 +55,18 @@ except Exception as e:
 # ======================================================
 st.markdown("## Método Hooghoudt")
 try:
-    Lh = 10.0  # Valor inicial para la iteración
-    d = Do / (((8 * Do) / (math.pi * Lh)) * math.log(Do / p) + 1)
-    L_hooghoudt = math.sqrt((8 * K * d * h + 4 * K * h**2) / R)
+    Lh = 10.0  # valor inicial de L (m)
+    for _ in range(50):  # iterar hasta converger
+        d = Do / (((8 * Do) / (math.pi * Lh)) * math.log(Do / p) + 1)
+        L_new = math.sqrt((8 * K * d * h + 4 * K * h**2) / R)
+        if abs(L_new - Lh) < 1e-3:
+            break
+        Lh = L_new
+    L_hooghoudt = L_new
     st.success(f"✅ Espaciamiento Hooghoudt: {L_hooghoudt:.2f} m")
 except Exception as e:
     st.error(f"❌ Error en el cálculo de Hooghoudt: {e}")
+
 
 # ======================================================
 # MÉTODO ERNST
@@ -216,6 +222,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
