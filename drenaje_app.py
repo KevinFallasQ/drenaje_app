@@ -33,7 +33,7 @@ else:  # Tubería
     st.markdown("### Parámetros de la tubería")
     r = st.number_input("Radio del tubo drenante r (m)", value=0.1, min_value=0.01, step=0.01)
     p = math.pi * r
-    Do = prof_capa_imp - NF + r
+    Do = prof_capa_imp - PZ + r
     h = prof_capa_imp - NFd - Do
     u = 4 * r
 
@@ -216,6 +216,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
