@@ -36,7 +36,7 @@ else:  # Tubería
     Do = prof_capa_imp - PZ + r
     h = prof_capa_imp - NFd - Do
     u = 4 * r
-
+    y = r
 # Profundidad total deseada
 H = prof_capa_imp - NFd
 
@@ -170,7 +170,7 @@ if L_plot:
     x = np.linspace(0, L_plot, 200)
     
     # Altura máxima del nivel freático (NF - NFd)
-    h0 = NF - NFd
+    h0 = PZ - NFd
     
     # Perfil parabólico (simétrico entre dos drenes)
     h = h0 * (1 - ((x - L_plot/2) / (L_plot/2))**2)
@@ -216,6 +216,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
