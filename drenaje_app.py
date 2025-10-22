@@ -58,22 +58,30 @@ d1 = st.number_input("Espesor del estrato superior d₁ (m)", value=1.0, min_val
 d2 = st.number_input("Espesor del estrato inferior d₂ (m)", value=1.0, min_value=0.1, step=0.1)
 
 try:
-    D1 = Do + h/2
-    A = R/(8*K*D1)
-    B = (R/(math.pi*K))*math.log(Do/u)
-    C = R*(y+h)/K - h
-	L_ernstpos = (-B + math.sqrt(B**2 - 4*A*C)) / (2 * A)
-    L_ernstneg = (-B - math.sqrt(B**2 - 4*A*C)) / (2 * A)
+    D1 = Do + h / 2
+    A = R / (8 * K * D1)
+    B = (R / (math.pi * K)) * math.log(Do / u)
+    C = R * (y + h) / K - h
 
-		if L_ernstpos > 0:
-			L_ernst = L_ernstpos
-		elif L_ernstneg > 0:
-			L_ernst = L_ernstneg
-		else:
-			L_ernst = None
-    st.success(f"✅ Espaciamiento Ernst: {L_ernst:.2f} m")
-except:
-    st.error("❌ Error en el cálculo de Ernst. Verifica los parámetros.")
+    discriminant = B**2 - 4 * A * C
+
+    if discriminant < 0:
+        st.error("❌ Discriminante negativo en la fórmula de Ernst. No hay solución real.")
+    else:
+        L2_pos = (-B + math.sqrt(discriminant)) / (2 * A)
+        L2_neg = (-B - math.sqrt(discriminant)) / (2 * A)
+
+        # Solo aceptamos soluciones positivas
+        L2 = L2_pos if L2_pos > 0 else L2_neg
+
+        if L2 > 0:
+            L_ernst = math.sqrt(L2)
+            st.success(f"✅ Espaciamiento Ernst: {L_ernst:.2f} m")
+        else:
+            st.error("❌ Resultado negativo en L². Verifica los parámetros ingresados.")
+
+except Exception as e:
+    st.error(f"❌ Error en el cálculo de Ernst: {e}")
 
 # Método Dagan
 try:
@@ -96,6 +104,7 @@ except:
 
    
    
+
 
 
 
