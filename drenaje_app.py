@@ -11,7 +11,7 @@ st.subheader("Métodos: Donnan, Hooghoudt, Ernst, Dagan y Glover–Dumm")
 st.markdown("### Parámetros generales")
 K = st.number_input("Conductividad hidráulica K (m/día)", value=1.2, min_value=0.0001, step=0.1)
 R = st.number_input("Recarga R (m/día)", value=0.01, min_value=0.0001, step=0.001)
-NF = st.number_input("Altura del nivel freático (m)", value=1.5, min_value=0.1, step=0.1)
+PZ = st.number_input("Profundidad de la zanja (m)", value=1.5, min_value=0.1, step=0.1)
 NFd = st.number_input("Altura del nivel freático deseado (m)", value=1.0, min_value=0.1, step=0.1)
 prof_capa_imp = st.number_input("Profundidad de la capa impermeable (m)", value=4.8, min_value=0.1, step=0.1)
 tipo_drenaje = st.selectbox("Tipo de drenaje", ["Zanja", "Tubería"])
@@ -25,7 +25,7 @@ if tipo_drenaje == "Zanja":
     y = st.number_input("Tirante de agua y (m)", value=0.2, min_value=0.01, step=0.01)
     Z = st.number_input("Talud Z (horizontal/vertical)", value=1.0, min_value=0.1, step=0.1)
     p = b + 2 * y * math.sqrt(1 + Z**2)
-    Do = prof_capa_imp - NF + y
+    Do = prof_capa_imp - PZ + y
     h = prof_capa_imp - NFd - Do
     u = p
 
@@ -216,6 +216,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
