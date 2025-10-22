@@ -44,7 +44,7 @@ except:
 # Método Hooghoudt
 L_hooghoudt = 10
 try:
-    d = Do/(((8*Do)/(math.pi*L_hooghoudt))*math.log(Do/p)+1))
+    d = Do/(((8*Do)/(math.pi*L_hooghoudt))*math.log(Do/p)+1)
     L_hooghoudt = math.sqrt((8 * K * d*h + 4*K*h**2) / R)
     st.success(f"✅ Espaciamiento Hooghoudt: {L_hooghoudt:.2f} m")
 except:
@@ -97,3 +97,4 @@ except:
 
    
    
+
