@@ -136,7 +136,7 @@ except Exception as e:
     st.error(f"❌ Error en el cálculo de Glover–Dumm: {e}")
 
    
-   import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 
@@ -216,5 +216,6 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
