@@ -182,43 +182,6 @@ except Exception as e:
 # ======================================================
 # VISUALIZACIÓN DEL PERFIL DEL NIVEL FREÁTICO ENTRE DRENES
 # ======================================================
-import matplotlib.pyplot as plt
-import numpy as np
-
-st.markdown("## 💧 Visualización del sistema de drenaje subsuperficial")
-
-# Visualización del perfil y flujo
-if L:
-    x = np.linspace(0, L, 200)
-    h_max = h if metodo != "Glover-Dumm (No Permanente)" else h0
-    y_freatico = -D + h_max * (1 - (2*x/L - 1)**2)
-
-    X, Y = np.meshgrid(np.linspace(0, L, 40), np.linspace(-D, 0, 20))
-    U = -(X - L/2)
-    V = -0.3 * (Y + D)
-
-    fig, ax = plt.subplots(figsize=(9, 4.5))
-    ax.axhline(0, color="black", linewidth=1.2, label="Terreno")
-    ax.plot(x, y_freatico, color="blue", linewidth=2, label="Nivel freático inicial")
-
-    # Nivel final Glover-Dumm
-    if metodo == "Glover-Dumm (No Permanente)":
-        y_final = -D + ht * (1 - (2*x/L - 1)**2)
-        ax.plot(x, y_final, color="cyan", linestyle="--", label="Nivel freático final")
-
-    ax.axhline(-D, color="brown", linestyle="--", label=f"Drenes a {D} m")
-    ax.scatter([0, L], [-D, -D], color="brown", s=80)
-    ax.streamplot(X, Y, U, V, color="skyblue", linewidth=1, density=1.1, arrowsize=1)
-
-    ax.set_xlim(-0.5, L + 0.5)
-    ax.set_ylim(-D - 0.5, h_max + 0.5)
-    ax.set_xlabel("Distancia entre drenes (m)")
-    ax.set_ylabel("Altura (m)")
-    ax.set_title("Perfil del drenaje subsuperficial")
-    ax.legend()
-    ax.grid(True, linestyle="--", alpha=0.4)
-
-    st.pyplot(fig)
 
 
 
