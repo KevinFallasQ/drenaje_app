@@ -178,87 +178,93 @@ except Exception as e:
 
 
    
-import numpy as np
-import matplotlib.pyplot as plt
-from io import BytesIO
 
 # ======================================================
 # VISUALIZACIÓN DEL PERFIL DEL NIVEL FREÁTICO ENTRE DRENES
 # ======================================================
-st.markdown("## 💧 Visualización del perfil del nivel freático entre drenes")
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Seleccionar el método que se quiere graficar
-metodo = st.selectbox(
-    "Selecciona el método para graficar el perfil",
-    ["Donnan", "Hooghoudt", "Ernst", "Dagan", "Glover–Dumm"]
+st.markdown("## 💧 Visualización del sistema de drenaje subsuperficial")
+
+# === Selección del método para graficar ===
+metodo = st.radio(
+    "Seleccione el método a visualizar:",
+    ("Ernst", "Hooghoudt", "Dagan", "Donnan", "Glover–Dumm"),
+    horizontal=True
 )
 
-# Asignar el espaciamiento correspondiente según el método elegido
-if metodo == "Donnan" and "L_donnan" in locals():
-    L_plot = L_donnan
-elif metodo == "Hooghoudt" and "L_hooghoudt" in locals():
-    L_plot = L_hooghoudt
-elif metodo == "Ernst" and "L_ernst" in locals():
-    L_plot = L_ernst
-elif metodo == "Dagan" and "L_dagan" in locals():
-    L_plot = L_dagan
-elif metodo == "Glover–Dumm" and "L_gd" in locals():
-    L_plot = L_gd
-else:
-    L_plot = None
+try:
+    # === Seleccionar variables según el método ===
+    if metodo == "Ernst":
+        L = L_ernst
+        PZ = PZ
+        r = r
+        prof_capa = prof_capa_imp
+    elif metodo == "Hooghoudt":
+        L = L_hooghoudt
+        PZ = PZ
+        r = r
+        prof_capa = prof_capa_imp
+    elif metodo == "Dagan":
+        L = L_dagan
+        PZ = PZ
+        r = r
+        prof_capa = prof_capa_imp
+    elif metodo == "Donnan":
+        L = L_donnan
+        PZ = PZ
+        r = r
+        prof_capa = prof_capa_imp
+    elif metodo == "Glover–Dumm":
+        L = L_gd
+        PZ = PZ_gd
+        r = r_gd
+        prof_capa = prof_capa_imp_gd
+    else:
+        st.warning("Seleccione un método válido.")
+        st.stop()
 
-if L_plot:
-    # Definir el dominio completo entre dos drenes
-    x = np.linspace(0, L_plot, 200)
-    
-    # Altura máxima del nivel freático (NF - NFd)
-    h0 = PZ - NFd
-    
-    # Perfil parabólico (simétrico entre dos drenes)
-    h = h0 * (1 - ((x - L_plot/2) / (L_plot/2))**2)
+    # === Parámetros del gráfico ===
+    num_drenes = 5  # cantidad de drenes visibles
+    ancho_total = L * (num_drenes - 1)
 
-    # Crear el gráfico
-    fig, ax = plt.subplots(figsize=(9, 4))
-    
-    # Curva del nivel freático
-    ax.plot(x, h, color="blue", linewidth=2.5, label="Nivel freático (perfil parabólico)")
-    
-    # Líneas de los drenes (extremos del espaciamiento)
-    ax.axhline(y=0, color="saddlebrown", linestyle="--", linewidth=2, label="Nivel del dren")
-    ax.axvline(x=0, color="gray", linestyle="--", linewidth=1)
-    ax.axvline(x=L_plot, color="gray", linestyle="--", linewidth=1)
-    
-    # Línea del nivel freático deseado (NFd)
-    ax.axhline(y=h0, color="green", linestyle="--", linewidth=2, label="Nivel freático deseado (NFd)")
+    # === Crear figura ===
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.set_title(f"Perfil de drenaje subsuperficial ({metodo})", fontsize=13)
+    ax.set_xlabel("Distancia horizontal (m)")
+    ax.set_ylabel("Profundidad (m)")
 
-    # Etiquetas y estilo
-    ax.set_xlabel("Distancia entre drenes (m)")
-    ax.set_ylabel("Altura sobre el dren (m)")
-    ax.set_title(f"Perfil completo del nivel freático – Método {metodo}")
-    ax.grid(True, linestyle="--", alpha=0.6)
+    # === Superficie del suelo ===
+    ax.plot([0, ancho_total], [0, 0], color="saddlebrown", linewidth=3)
+
+    # === Capa impermeable ===
+    ax.hlines(y=prof_capa, xmin=0, xmax=ancho_total,
+              color="black", linestyle="--", label="Capa impermeable")
+
+    # === Drenes y flechas ===
+    for i in range(num_drenes):
+        x = i * L
+        y = PZ
+        circle = plt.Circle((x, y), r, color="steelblue", ec="black", zorder=5)
+        ax.add_patch(circle)
+        # Flechas del flujo de agua hacia el dren
+        ax.arrow(x - L/4, y - 0.3, L/5, 0.2, head_width=0.1,
+                 color="deepskyblue", length_includes_head=True)
+        ax.arrow(x + L/4, y - 0.3, -L/5, 0.2, head_width=0.1,
+                 color="deepskyblue", length_includes_head=True)
+
+    # === Estética ===
+    ax.set_ylim(prof_capa + 0.5, -0.2)
+    ax.set_xlim(-L/2, ancho_total + L/2)
     ax.legend()
-    ax.set_ylim(bottom=-0.1)
+    ax.grid(True, linestyle="--", alpha=0.4)
 
-    # Mostrar el gráfico
+    # === Mostrar gráfico ===
     st.pyplot(fig)
 
-    # ==============================================
-    # OPCIÓN PARA DESCARGAR EL GRÁFICO COMO IMAGEN
-    # ==============================================
-    buffer = BytesIO()
-    fig.savefig(buffer, format="png", dpi=300, bbox_inches="tight")
-    buffer.seek(0)
-
-    st.download_button(
-        label="📥 Descargar gráfico como PNG",
-        data=buffer,
-        file_name=f"perfil_nivel_freatico_completo_{metodo}.png",
-        mime="image/png"
-    )
-
-else:
-    st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
-
+except Exception as e:
+    st.error(f"❌ Error al generar el gráfico: {e}")
 
 
 
