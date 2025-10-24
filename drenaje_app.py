@@ -187,87 +187,38 @@ import numpy as np
 
 st.markdown("## 💧 Visualización del sistema de drenaje subsuperficial")
 
-# === Selección del método para graficar ===
-metodo = st.radio(
-    "Seleccione el método a visualizar:",
-    ("Ernst", "Hooghoudt", "Dagan", "Donnan", "Glover–Dumm"),
-    horizontal=True
-)
+# Visualización del perfil y flujo
+if L:
+    x = np.linspace(0, L, 200)
+    h_max = h if metodo != "Glover-Dumm (No Permanente)" else h0
+    y_freatico = -D + h_max * (1 - (2*x/L - 1)**2)
 
-try:
-    # === Seleccionar variables según el método ===
-    if metodo == "Ernst":
-        L = L_ernst
-        PZ = PZ
-        r = r
-        prof_capa = prof_capa_imp
-    elif metodo == "Hooghoudt":
-        L = L_hooghoudt
-        PZ = PZ
-        r = r
-        prof_capa = prof_capa_imp
-    elif metodo == "Dagan":
-        L = L_dagan
-        PZ = PZ
-        r = r
-        prof_capa = prof_capa_imp
-    elif metodo == "Donnan":
-        L = L_donnan
-        PZ = PZ
-        r = r
-        prof_capa = prof_capa_imp
-    elif metodo == "Glover–Dumm":
-        L = L_gd
-        PZ = PZ_gd
-        r = r_gd
-        prof_capa = prof_capa_imp_gd
-    else:
-        st.warning("Seleccione un método válido.")
-        st.stop()
+    X, Y = np.meshgrid(np.linspace(0, L, 40), np.linspace(-D, 0, 20))
+    U = -(X - L/2)
+    V = -0.3 * (Y + D)
 
-    # === Parámetros del gráfico ===
-    num_drenes = 5  # cantidad de drenes visibles
-    ancho_total = L * (num_drenes - 1)
+    fig, ax = plt.subplots(figsize=(9, 4.5))
+    ax.axhline(0, color="black", linewidth=1.2, label="Terreno")
+    ax.plot(x, y_freatico, color="blue", linewidth=2, label="Nivel freático inicial")
 
-    # === Crear figura ===
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.set_title(f"Perfil de drenaje subsuperficial ({metodo})", fontsize=13)
-    ax.set_xlabel("Distancia horizontal (m)")
-    ax.set_ylabel("Profundidad (m)")
+    # Nivel final Glover-Dumm
+    if metodo == "Glover-Dumm (No Permanente)":
+        y_final = -D + ht * (1 - (2*x/L - 1)**2)
+        ax.plot(x, y_final, color="cyan", linestyle="--", label="Nivel freático final")
 
-    # === Superficie del suelo ===
-    ax.plot([0, ancho_total], [0, 0], color="saddlebrown", linewidth=3)
+    ax.axhline(-D, color="brown", linestyle="--", label=f"Drenes a {D} m")
+    ax.scatter([0, L], [-D, -D], color="brown", s=80)
+    ax.streamplot(X, Y, U, V, color="skyblue", linewidth=1, density=1.1, arrowsize=1)
 
-    # === Capa impermeable ===
-    ax.hlines(y=prof_capa, xmin=0, xmax=ancho_total,
-              color="black", linestyle="--", label="Capa impermeable")
-
-    # === Drenes y flechas ===
-    for i in range(num_drenes):
-        x = i * L
-        y = PZ
-        circle = plt.Circle((x, y), r, color="steelblue", ec="black", zorder=5)
-        ax.add_patch(circle)
-        # Flechas del flujo de agua hacia el dren
-        ax.arrow(x - L/4, y - 0.3, L/5, 0.2, head_width=0.1,
-                 color="deepskyblue", length_includes_head=True)
-        ax.arrow(x + L/4, y - 0.3, -L/5, 0.2, head_width=0.1,
-                 color="deepskyblue", length_includes_head=True)
-
-    # === Estética ===
-    ax.set_ylim(prof_capa + 0.5, -0.2)
-    ax.set_xlim(-L/2, ancho_total + L/2)
+    ax.set_xlim(-0.5, L + 0.5)
+    ax.set_ylim(-D - 0.5, h_max + 0.5)
+    ax.set_xlabel("Distancia entre drenes (m)")
+    ax.set_ylabel("Altura (m)")
+    ax.set_title("Perfil del drenaje subsuperficial")
     ax.legend()
     ax.grid(True, linestyle="--", alpha=0.4)
 
-    # === Mostrar gráfico ===
     st.pyplot(fig)
-
-except Exception as e:
-    st.error(f"❌ Error al generar el gráfico: {e}")
-
-
-
 
 
 
