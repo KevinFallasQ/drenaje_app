@@ -103,7 +103,7 @@ except Exception as e:
 st.markdown("## Método Dagan")
 try:
     A = R / (2 * Do)
-    beta = (2 / math.pi) * math.log(2 * math.cosh(p / Do) - 1)
+    beta = (2 / math.pi) * math.log(2 * math.cosh(p / Do) - 2)
     B = R * beta
     C = -4 * h * K
    
@@ -225,6 +225,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
