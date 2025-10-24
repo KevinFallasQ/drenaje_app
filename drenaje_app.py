@@ -32,10 +32,11 @@ if tipo_drenaje == "Zanja":
 else:  # Tubería
     st.markdown("### Parámetros de la tubería")
     r = st.number_input("Radio del tubo drenante r (m)", value=0.1, min_value=0.01, step=0.01)
+    b = st.number_input("Ancho de solera b de la zanja (m)", value=0.5, min_value=0.01, step=0.01, format="%.3f")
     p = math.pi * r
     Do = prof_capa_imp - PZ + r
     h = prof_capa_imp - NFd - Do
-    u = 4 * r
+    u = b + 4 * r
     y = r
 # Profundidad total deseada
 H = prof_capa_imp - NFd
@@ -225,6 +226,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
