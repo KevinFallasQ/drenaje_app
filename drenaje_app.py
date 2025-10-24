@@ -192,7 +192,7 @@ st.markdown("## 💧 Visualización del perfil del nivel freático entre drenes"
 # Seleccionar el método que se quiere graficar en el método de glover dumm tengo un PZ diferente, cómo podría corregir el código
 metodo = st.selectbox(
     "Selecciona el método para graficar el perfil",
-    ["Donnan", "Hooghoudt", "Ernst", "Dagan", "Glover–Dumm"]
+    ["Donnan", "Hooghoudt", "Ernst", "Dagan"]
 )
 
 # Asignar el espaciamiento correspondiente según el método elegido
@@ -204,8 +204,6 @@ elif metodo == "Ernst" and "L_ernst" in locals():
     L_plot = L_ernst
 elif metodo == "Dagan" and "L_dagan" in locals():
     L_plot = L_dagan
-elif metodo == "Glover–Dumm" and "L_gd" in locals():
-    L_plot = L_gd
 else:
     L_plot = None
 
@@ -260,5 +258,6 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
