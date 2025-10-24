@@ -56,8 +56,8 @@ except Exception as e:
 # ======================================================
 st.markdown("## Método Hooghoudt")
 try:
-    Lh = 10.0  # valor inicial de L (m)
-    for _ in range(100):  # iterar hasta converger
+    Lh = 5.0  # valor inicial de L (m)
+    for _ in range(200):  # iterar hasta converger
         d = Do / (((8 * Do) / (math.pi * Lh)) * math.log(Do / p) + 1)
         L_new = math.sqrt((8 * K * d * h + 4 * K * h**2) / R)
         if abs(L_new - Lh) < 1e-3:
@@ -130,20 +130,52 @@ except Exception as e:
 # MÉTODO GLOVER-DUMM (RÉGIMEN NO PERMANENTE)
 # ======================================================
 st.markdown("## Régimen No Permanente (Glover–Dumm)")
-K_gd = st.number_input("Conductividad hidráulica K (m/día) [Glover–Dumm]", value=1.2, min_value=0.0001, step=0.1)
-S = st.number_input("Almacenamiento específico S (adimensional)", value=0.05, min_value=0.001, step=0.01)
-t = st.number_input("Tiempo de drenaje t (días)", value=10.0, min_value=0.1, step=1.0)
-h0 = st.number_input("Altura inicial del nivel freático h₀ (m)", value=1.5, min_value=0.1, step=0.1)
-ht = st.number_input("Altura final del nivel freático hₜ (m)", value=0.8, min_value=0.1, step=0.1)
 
+# Parámetros de entrada
+K_gd = st.number_input("Conductividad hidráulica K (m/día) [Glover–Dumm]", value=1.20, min_value=0.0001, step=0.01, format="%.2f")
+S = st.number_input("Porosidad drenable S (adimensional)", value=0.05, min_value=0.001, step=0.01, format="%.2f")
+t = st.number_input("Tiempo de drenaje t (días)", value=10.0, min_value=0.1, step=0.1, format="%.2f")
+hi = st.number_input("Altura inicial del nivel freático h₀ (m)", value=1.50, min_value=0.1, step=0.1, format="%.2f")
+hf = st.number_input("Altura final deseada del nivel freático hₜ (m)", value=0.80, min_value=0.1, step=0.1, format="%.2f")
+PZ_gd = st.number_input("Profundidad de la zanja (m)", value=1.50, min_value=0.01, step=0.01, format="%.2f")
+prof_capa_imp_gd = st.number_input("Profundidad de la capa impermeable (m)", value=4.80, min_value=0.01, step=0.01, format="%.2f")
+
+st.markdown("### Parámetros de la tubería")
+r_gd = st.number_input("Radio del tubo drenante r (m)", value=0.10, min_value=0.01, step=0.01, format="%.2f")
+b_gd = st.number_input("Ancho de solera b de la zanja (m)", value=0.50, min_value=0.01, step=0.01, format="%.2f")
+
+# =======================
+# Cálculos geométricos
+# =======================
+p = math.pi * r_gd  # perímetro hidráulico equivalente
+Do = prof_capa_imp_gd - PZ_gd + r_gd  # profundidad desde la capa impermeable hasta el tubo
+ho = PZ_gd - r_gd - hi  # altura inicial sobre el dren
+ht = PZ_gd - r_gd - hf  # altura final sobre el dren
+
+# =======================
+# Cálculo iterativo de L
+# =======================
 try:
-    if ht >= h0:
-        st.error("⚠️ La altura final (hₜ) debe ser menor que la inicial (h₀).")
-    else:
-        L_gd = math.sqrt((4 * K_gd * t / (math.pi * S)) * math.log(h0 / ht))
-        st.success(f"✅ Espaciamiento Glover–Dumm: {L_gd:.2f} m")
+    Lh = 5.0  # valor inicial de L (m)
+    for _ in range(200):  # iterar hasta convergencia
+        # Cálculo de d usando Hooghoudt
+        d = Do / (((8 * Do) / (math.pi * Lh)) * math.log(Do / p) + 1)
+        
+        # Fórmula de Glover–Dumm
+        L_new = math.sqrt((math.pi**2 * K_gd * t * (d + (ho + ht) / 4)) / (S * math.log(1.16 * (ho / ht))))
+        
+        # Criterio de convergencia
+        if abs(L_new - Lh) < 1e-4:
+            break
+        Lh = L_new
+    
+    L_gd = L_new
+    st.success(f"✅ Espaciamiento Glover–Dumm: {L_gd:.2f} m")
+
 except Exception as e:
     st.error(f"❌ Error en el cálculo de Glover–Dumm: {e}")
+
+
 
    
 import numpy as np
@@ -226,6 +258,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
