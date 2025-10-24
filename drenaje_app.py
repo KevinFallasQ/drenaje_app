@@ -9,11 +9,11 @@ st.subheader("Métodos: Donnan, Hooghoudt, Ernst, Dagan y Glover–Dumm")
 # PARÁMETROS GENERALES
 # ======================================================
 st.markdown("### Parámetros generales")
-K = st.number_input("Conductividad hidráulica K (m/día)", value=1.2, min_value=0.0001, step=0.01)
-R = st.number_input("Recarga R (m/día)", value=0.01, min_value=0.0001, step=0.001)
-PZ = st.number_input("Profundidad de la zanja (m)", value=1.5, min_value=0.01, step=0.01)
-NFd = st.number_input("Altura del nivel freático deseado (m)", value=1.0, min_value=0.01, step=0.01)
-prof_capa_imp = st.number_input("Profundidad de la capa impermeable (m)", value=4.8, min_value=0.01, step=0.01)
+K = st.number_input("Conductividad hidráulica K (m/día)", value=1.2, min_value=0.0001, step=0.01, format="%.3f")
+R = st.number_input("Recarga R (m/día)", value=0.01, min_value=0.0001, step=0.001, format="%.3f")
+PZ = st.number_input("Profundidad de la zanja (m)", value=1.5, min_value=0.01, step=0.01, format="%.3f")
+NFd = st.number_input("Altura del nivel freático deseado (m)", value=1.0, min_value=0.01, step=0.01, format="%.3f")
+prof_capa_imp = st.number_input("Profundidad de la capa impermeable (m)", value=4.8, min_value=0.01, step=0.01, format="%.3f")
 tipo_drenaje = st.selectbox("Tipo de drenaje", ["Zanja", "Tubería"])
 
 # ======================================================
@@ -21,9 +21,9 @@ tipo_drenaje = st.selectbox("Tipo de drenaje", ["Zanja", "Tubería"])
 # ======================================================
 if tipo_drenaje == "Zanja":
     st.markdown("### Parámetros de la zanja")
-    b = st.number_input("Ancho de solera b (m)", value=0.5, min_value=0.01, step=0.01)
-    y = st.number_input("Tirante de agua y (m)", value=0.2, min_value=0.01, step=0.01)
-    Z = st.number_input("Talud Z (horizontal/vertical)", value=1.0, min_value=0.01, step=0.01)
+    b = st.number_input("Ancho de solera b (m)", value=0.5, min_value=0.01, step=0.01, format="%.3f")
+    y = st.number_input("Tirante de agua y (m)", value=0.2, min_value=0.01, step=0.01, format="%.3f")
+    Z = st.number_input("Talud Z (horizontal/vertical)", value=1.0, min_value=0.01, step=0.01, format="%.3f")
     p = b + 2 * y * math.sqrt(1 + Z**2)
     Do = prof_capa_imp - PZ + y
     h = prof_capa_imp - NFd - Do
@@ -35,7 +35,7 @@ else:  # Tubería
     p = math.pi * r
     Do = prof_capa_imp - PZ + r
     h = prof_capa_imp - NFd - Do
-    u = b + 4 * r
+    u = 4 * r
     y = r
 # Profundidad total deseada
 H = prof_capa_imp - NFd
@@ -225,6 +225,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
