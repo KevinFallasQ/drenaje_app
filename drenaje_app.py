@@ -111,7 +111,7 @@ try:
     discriminant = B**2 - 4 * A * C
 
     if discriminant >= 0:
-        L2 = (-B + math.sqrt(discriminant)) / (2 * A)
+        L2 = (-B - math.sqrt(discriminant)) / (2 * A)
         if L2 > 0:
             L_dagan = math.sqrt(L2)
             st.success(f"✅ Espaciamiento Dagan: {L_dagan:.2f} m")
@@ -222,6 +222,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
