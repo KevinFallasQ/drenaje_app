@@ -71,31 +71,29 @@ except Exception as e:
 # ======================================================
 # MÉTODO ERNST
 # ======================================================
-st.markdown("## Método Ernst (dos estratos)")
-K1 = st.number_input("Conductividad hidráulica estrato superior K₁ (m/día)", value=0.8, min_value=0.0001, step=0.1)
-K2 = st.number_input("Conductividad hidráulica estrato inferior K₂ (m/día)", value=2.0, min_value=0.0001, step=0.1)
-d1 = st.number_input("Espesor del estrato superior d₁ (m)", value=1.0, min_value=0.1, step=0.1)
-d2 = st.number_input("Espesor del estrato inferior d₂ (m)", value=1.0, min_value=0.1, step=0.1)
-
+st.markdown("## Método Ernst")
 try:
+    
     D1 = Do + h / 2
     A = R / (8 * K * D1)
     B = (R / (math.pi * K)) * math.log(Do / u)
     C = R * (y + h) / K - h
+
     discriminant = B**2 - 4 * A * C
 
     if discriminant < 0:
         st.error("❌ Discriminante negativo en la fórmula de Ernst. No hay solución real.")
-    else:
-        L2_pos = (-B + math.sqrt(discriminant)) / (2 * A)
-        L2_neg = (-B - math.sqrt(discriminant)) / (2 * A)
-        L2 = L2_pos if L2_pos > 0 else L2_neg
+    else:       
+        L_pos = (-B + math.sqrt(discriminant)) / (2 * A)
+        L_neg = (-B - math.sqrt(discriminant)) / (2 * A)
 
-        if L2 > 0:
-            L_ernst = math.sqrt(L2)
-            st.success(f"✅ Espaciamiento Ernst: {L_ernst:.2f} m")
+        # Seleccionar la raíz positiva (físicamente válida)
+        L_ernst = L_pos if L_pos > 0 else L_neg
+
+        if L_ernst > 0:
+            st.success(f"✅ Espaciamiento Ernst (zanjas): {L_ernst:.2f} m")
         else:
-            st.error("❌ Resultado negativo en L². Verifica los parámetros.")
+            st.error("❌ Resultado negativo para L. Verifica los parámetros.")
 except Exception as e:
     st.error(f"❌ Error en el cálculo de Ernst: {e}")
 
@@ -111,7 +109,7 @@ try:
     discriminant = B**2 - 4 * A * C
 
     if discriminant >= 0:
-        L2 = (-B - math.sqrt(discriminant)) / (2 * A)
+        L2 = (-B + math.sqrt(discriminant)) / (2 * A)
         if L2 > 0:
             L_dagan = math.sqrt(L2)
             st.success(f"✅ Espaciamiento Dagan: {L_dagan:.2f} m")
@@ -222,6 +220,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
