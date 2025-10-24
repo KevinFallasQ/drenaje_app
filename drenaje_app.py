@@ -106,7 +106,7 @@ st.markdown("## Método Dagan")
 try:
     A = R / (2 * Do)
     beta = (2 / math.pi) * math.log(2 * math.cosh(p / Do) - 2)
-    B = -R * beta
+    B = R * beta
     C = -4 * h * K
     discriminant = B**2 - 4 * A * C
 
@@ -222,6 +222,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
