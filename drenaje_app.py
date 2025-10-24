@@ -91,7 +91,7 @@ try:
         L_ernst = L_pos if L_pos > 0 else L_neg
 
         if L_ernst > 0:
-            st.success(f"✅ Espaciamiento Ernst (zanjas): {L_ernst:.2f} m")
+            st.success(f"✅ Espaciamiento Ernst: {L_ernst:.2f} m")
         else:
             st.error("❌ Resultado negativo para L. Verifica los parámetros.")
 except Exception as e:
@@ -106,20 +106,25 @@ try:
     beta = (2 / math.pi) * math.log(2 * math.cosh(p / Do) - 2)
     B = R * beta
     C = -4 * h * K
+   
+ 
     discriminant = B**2 - 4 * A * C
 
-    if discriminant >= 0:
-        L2 = (-B + math.sqrt(discriminant)) / (2 * A)
-        if L2 > 0:
-            L_dagan = math.sqrt(L2)
+    if discriminant < 0:
+        st.error("❌ Discriminante negativo en la fórmula de Dagan. No hay solución real.")
+    else:       
+        L_pos = (-B + math.sqrt(discriminant)) / (2 * A)
+        L_neg = (-B - math.sqrt(discriminant)) / (2 * A)
+
+        # Seleccionar la raíz positiva (físicamente válida)
+        L_dagan = L_pos if L_pos > 0 else L_neg
+
+        if L_dagan > 0:
             st.success(f"✅ Espaciamiento Dagan: {L_dagan:.2f} m")
         else:
-            st.error("❌ Resultado negativo en L².")
-    else:
-        st.error("❌ Discriminante negativo en Dagan.")
+            st.error("❌ Resultado negativo para L. Verifica los parámetros.")
 except Exception as e:
     st.error(f"❌ Error en el cálculo de Dagan: {e}")
-
 # ======================================================
 # MÉTODO GLOVER-DUMM (RÉGIMEN NO PERMANENTE)
 # ======================================================
@@ -220,6 +225,7 @@ if L_plot:
 
 else:
     st.warning("⚠️ Calcula primero el espaciamiento con el método seleccionado para visualizar el perfil completo.")
+
 
 
 
