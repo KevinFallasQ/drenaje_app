@@ -50,9 +50,41 @@ def metodo_dagan(K, R, Do, p, h):
     return L1 if L1 > 0 else L2
 
 
-# ---------- MÉTODOS PERMANENTE – 2 ESTRATOS ----------
+def metodo_ernst_homogeneo(K, R, Do, u, y, h):
+    """Método Ernst — 1 Estratos """
+    D1 = Do + h / 2
+    A = R / (8 * K * D1)
+    B = (R / (math.pi * K)) * math.log(Do / u)
+    C = R * (y + h) / K - h
 
-def metodo_ernst(K, R, Do, u, y, h):
+    disc = B**2 - 4*A*C
+    if disc < 0:
+        return None
+
+    L1 = (-B + math.sqrt(disc)) / (2*A)
+    L2 = (-B - math.sqrt(disc)) / (2*A)
+    return L1 if L1 > 0 else L2
+
+# ---------- MÉTODOS PERMANENTE – 2 ESTRATOS ----------
+def metodo_dagan_dos_estratos(K1, K2, R, Do, p, h):
+    """Método Dagan — Permanente 2 estratos"""
+    c = 1/(1-(R/K1))
+    A = cR / (2 * Do)
+    beta = (2 / math.pi) * math.log(2 * math.cosh(p / Do) - 2)
+    B = cR * beta
+    C = -4 * h * K2
+
+    disc = B**2 - 4*A*C
+    if disc < 0:
+        return None
+    L1 = (-B + math.sqrt(disc)) / (2*A)
+    L2 = (-B - math.sqrt(disc)) / (2*A)
+    return L1 if L1 > 0 else L2
+
+
+
+
+def metodo_ernst_dos_estratos(K1, K2, R, Do, u, y, h):
     """Método Ernst — 2 Estratos o K vertical != K horizontal"""
     D1 = Do + h / 2
     A = R / (8 * K * D1)
@@ -92,6 +124,8 @@ def metodo_glover_dumm(K, S, t, ho, ht, Do, p):
             break
         Lh = L_new
     return L_new
+
+def metodo_jenab():
 
 # ======================================================
 # INTERFAZ PRINCIPAL
@@ -158,7 +192,7 @@ H = prof_capa_imp - NFd
 
 # ------------- 1) PERMANENTE HOMOGÉNEO ----------------
 if categoria == "Permanente – Homogéneo":
-    metodo = st.selectbox("Seleccione el método", ["Donnan", "Hooghoudt", "Dagan"])
+    metodo = st.selectbox("Seleccione el método", ["Donnan", "Hooghoudt", "Dagan", "Ernst"])
 
     if metodo == "Donnan":
         L = metodo_donnan(K, R, H, Do)
@@ -169,6 +203,9 @@ if categoria == "Permanente – Homogéneo":
     elif metodo == "Dagan":
         L = metodo_dagan(K, R, Do, p, h)
 
+    elif metodo == "Ernst":
+        L = metodo_ernst_homogeneo(K, R, Do, p, h)
+    
     if L is None:
         st.error("❌ No fue posible calcular el espaciamiento (discriminante negativo).")
     else:
@@ -178,9 +215,16 @@ if categoria == "Permanente – Homogéneo":
 # ------------- 2) PERMANENTE 2 ESTRATOS ----------------
 elif categoria == "Permanente – 2 estratos":
     metodo = st.selectbox("Seleccione el método", ["Ernst"])
+    K1 = st.number_input("Conductividad hidráulica K₁ (m/día) — Estrato superior", value=1.0)
+    K2 = st.number_input("Conductividad hidráulica K₂ (m/día) — Estrato inferior", value=0.5)
 
-    if metodo == "Ernst":
-        L = metodo_ernst(K, R, Do, u, y, h)
+    
+    
+    if metodo == "Dagan":
+        L = metodo_dagan_dos_estratos(K1, K2, R, Do, u, y, h)
+    
+    elif metodo == "Ernst":
+        L = metodo_ernst_dos_estratos(K1, K2, R, Do, u, y, h)
 
         if L is None:
             st.error("❌ No hay solución real en Ernst (discriminante < 0).")
@@ -204,6 +248,7 @@ else:
 
         L = metodo_glover_dumm(K, S, t, ho, ht, Do, p)
         st.success(f"✅ Espaciamiento Glover–Dumm: **{L:.2f} m**")
+
 
 
 
