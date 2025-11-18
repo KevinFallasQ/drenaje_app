@@ -65,11 +65,11 @@ else:
 # ----------------------------------------
 if regimen == "No permanente":
     st.markdown("## 4) Parámetros — Glover–Dumm (régimen no permanente)")
-    K_gd = st.number_input("Conductividad hidráulica K (m/día) [Glover–Dumm]", value=1.20, min_value=1e-6, step=0.01, format="%.3f")
+    K_gd = st.number_input("Conductividad hidráulica K (m/día) [Glover–Dumm]", value=0.90, min_value=1e-6, step=0.01, format="%.3f")
     S = st.number_input("Porosidad drenable S (adimensional)", value=0.05, min_value=0.0001, step=0.005, format="%.3f")
-    t = st.number_input("Tiempo de drenaje t (días)", value=10.0, min_value=0.01, step=0.1, format="%.2f")
-    hi = st.number_input("Altura inicial del nivel freático h₀ (m)", value=1.50, min_value=0.0, step=0.01, format="%.3f")
-    hf = st.number_input("Altura final deseada del nivel freático hₜ (m)", value=0.80, min_value=0.0, step=0.01, format="%.3f")
+    t = st.number_input("Tiempo de drenaje t (días)", value=3.0, min_value=0.01, step=0.1, format="%.2f")
+    hi = st.number_input("Altura inicial del nivel freático h₀ (m)", value=0.650, min_value=0.0, step=0.01, format="%.3f")
+    hf = st.number_input("Altura final deseada del nivel freático hₜ (m)", value=1.10, min_value=0.0, step=0.01, format="%.3f")
     PZ_gd = st.number_input("Profundidad de la zanja PZ (m) — (Glover–Dumm)", value=1.50, min_value=0.01, step=0.01, format="%.3f")
     prof_capa_imp_gd = st.number_input("Profundidad de la capa impermeable (m) — (Glover–Dumm)", value=4.80, min_value=0.01, step=0.01, format="%.3f")
 
@@ -232,6 +232,7 @@ else:
 
 st.markdown("---")
 st.caption("Notas: Las fórmulas empleadas son las provistas en la versión inicial. Revise unidades y dominio de las funciones (logs, raíces).")
+
 
 
 
