@@ -125,7 +125,6 @@ def metodo_glover_dumm(K, S, t, ho, ht, Do, p):
         Lh = L_new
     return L_new
 
-def metodo_jenab():
 
 # ======================================================
 # INTERFAZ PRINCIPAL
@@ -248,6 +247,7 @@ else:
 
         L = metodo_glover_dumm(K, S, t, ho, ht, Do, p)
         st.success(f"✅ Espaciamiento Glover–Dumm: **{L:.2f} m**")
+
 
 
 
