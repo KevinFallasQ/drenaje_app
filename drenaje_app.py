@@ -238,15 +238,15 @@ else:
     if metodo == "Glover–Dumm":
         st.markdown("### Parámetros adicionales (No permanente)")
         S = st.number_input("Porosidad drenable S", value=0.05)
-        t = st.number_input("Tiempo de drenaje t (días)", value=10.0)
-        hi = st.number_input("Nivel inicial h₀ (m)", value=1.5)
-        hf = st.number_input("Nivel final hₜ (m)", value=0.8)
+        t = st.number_input("Tiempo de drenaje t (días)", value=3.0)
+        
 
         ho = PZ - y - hi
         ht = PZ - y - hf
 
         L = metodo_glover_dumm(K, S, t, ho, ht, Do, p)
         st.success(f"✅ Espaciamiento Glover–Dumm: **{L:.2f} m**")
+
 
 
 
